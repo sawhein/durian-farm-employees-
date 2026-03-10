@@ -1,21 +1,21 @@
 {
-  "name": "Employee Attendance",
-  "short_name": "Attendance",
+  "name": "บันทึกการเข้างาน",
+  "short_name": "เข้างาน",
   "description": "Employee Attendance Tracker",
-  "start_url": "/durian-farm-employees-/",
-  "scope": "/durian-farm-employees-/",
+  "start_url": "/durianfarmemployees/",
+  "scope": "/durianfarmemployees/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1C1C1E",
   "theme_color": "#2C2C2E",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/sawhein/durian-farm-employees-/main/icon.png",
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://raw.githubusercontent.com/sawhein/durian-farm-employees-/main/icon.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
