@@ -85,31 +85,29 @@
 
   /* Grid */
   .grid {
-    display: flex; flex-direction: row; gap: 14px;
-    padding: 8px 20px 100px;
-    overflow-x: auto; overflow-y: visible;
-    scroll-snap-type: x mandatory;
+    display: flex; flex-direction: column; gap: 12px;
+    padding: 8px 16px 100px;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
   }
-  .grid::-webkit-scrollbar { display: none; }
   
   /* Employee Card */
   .emp-card {
-    background: var(--surface); border-radius: 20px; padding: 20px 16px 16px;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    background: var(--surface); border-radius: 18px; padding: 14px 18px;
+    display: flex; flex-direction: row; align-items: center; gap: 16px;
     cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.06);
     position: relative; overflow: hidden;
-    scroll-snap-align: center;
-    min-width: 150px; max-width: 150px;
-    flex-shrink: 0;
+    scroll-snap-align: start;
+    width: 100%; flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
   }
   .emp-card.active {
-    border-color: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.25);
     background: var(--surface2);
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.4);
-    transform: scale(1.04);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.5);
+    transform: scale(1.02);
   }
   .emp-card:active { transform: scale(0.94); background: var(--surface2); }
   .emp-card::before {
@@ -133,10 +131,10 @@
   }
   .bs-avatar { overflow: hidden; position: relative; }
   .emp-name {
-    font-size: 17px; font-weight: 600; text-align: center; line-height: 1.3;
+    font-size: 17px; font-weight: 700; text-align: left; line-height: 1.3;
     color: var(--text); word-break: break-word; font-family: 'Sarabun', sans-serif;
   }
-  .emp-badges { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+  .emp-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-start; margin-top: 4px; }
   .badge {
     font-size: 16px; padding: 5px 12px; border-radius: 8px;
     font-weight: 700; font-family: 'Sarabun', sans-serif;
@@ -563,11 +561,13 @@ function renderGrid(emps) {
     const pay = days * e.dayRate + ot * e.otRate;
     return `<div class="emp-card" id="card-${e.id}" onclick="activateCard(${e.id}); openSheet(${e.id})">
       <div class="avatar" style="background:${color}">${initials}${imgTag}</div>
-      <div class="emp-name">${e.name}</div>
-      <div class="emp-badges">
-        <span class="badge badge-day">📆${days}วัน</span>
-        <span class="badge badge-ot">⏱${ot}ช.ม</span>
-        <span class="badge badge-pay">฿${pay.toLocaleString()}</span>
+      <div style="flex:1;min-width:0">
+        <div class="emp-name">${e.name}</div>
+        <div class="emp-badges">
+          <span class="badge badge-day">📆 ${days} วัน</span>
+          <span class="badge badge-ot">⏱ ${ot} ช.ม</span>
+          <span class="badge badge-pay">฿ ${pay.toLocaleString()}</span>
+        </div>
       </div>
     </div>`;
   }).join('');
