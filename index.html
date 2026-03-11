@@ -46,7 +46,7 @@
   }
   .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .header-title { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.5px; }
-  .header-period { font-size: 15px; color: var(--text3); margin-top: 2px; font-family: 'Sarabun', sans-serif; }
+  .header-period { font-size: 18px; color: var(--text2); margin-top: 3px; font-family: 'Sarabun', sans-serif; font-weight: 600; }
   .sync-btn {
     display: flex; align-items: center; gap: 6px;
     background: var(--surface2); border: 1px solid var(--border);
@@ -84,14 +84,32 @@
   .search-icon { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
 
   /* Grid */
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 4px 16px 100px; }
+  .grid {
+    display: flex; flex-direction: row; gap: 14px;
+    padding: 8px 20px 100px;
+    overflow-x: auto; overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .grid::-webkit-scrollbar { display: none; }
   
   /* Employee Card */
   .emp-card {
-    background: var(--surface); border-radius: 16px; padding: 14px 10px 12px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.05);
+    background: var(--surface); border-radius: 20px; padding: 20px 16px 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    border: 1px solid rgba(255,255,255,0.05);
     position: relative; overflow: hidden;
+    scroll-snap-align: center;
+    min-width: 150px; max-width: 150px;
+    flex-shrink: 0;
+  }
+  .emp-card.active {
+    border-color: rgba(255,255,255,0.3);
+    background: var(--surface2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.4);
+    transform: scale(1.04);
   }
   .emp-card:active { transform: scale(0.94); background: var(--surface2); }
   .emp-card::before {
@@ -124,9 +142,9 @@
     font-weight: 700; font-family: 'Sarabun', sans-serif;
     display: flex; align-items: center; gap: 2px;
   }
-  .badge-day { background: rgba(48,209,88,0.2); color: var(--accent2); }
-  .badge-ot { background: rgba(255,159,10,0.2); color: var(--accent); }
-  .badge-pay { background: rgba(10,132,255,0.2); color: var(--accent3); }
+  .badge-day { background: rgba(191,90,242,0.2); color: #BF5AF2; }
+  .badge-ot  { background: rgba(10,132,255,0.2);  color: #0A84FF; }
+  .badge-pay { background: rgba(48,209,88,0.2);   color: #30D158; }
 
   /* Loading/Error state */
   .state-msg {
@@ -230,7 +248,7 @@
   .pay-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
   .pay-row + .pay-row { border-top: 1px solid rgba(255,255,255,0.05); }
   .pay-label { font-size: 18px; color: var(--text2); }
-  .pay-val { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 21px; }
+  .pay-val { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 21px; color: #30D158; }
   .pay-total { background: linear-gradient(135deg, rgba(48,209,88,0.15), rgba(10,132,255,0.1)); border-radius: 12px; padding: 14px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(48,209,88,0.2); }
   .pay-total .pay-label { font-weight: 700; font-size: 20px; color: var(--text); }
   .pay-total .pay-val { font-size: 28px; color: var(--accent2); }
@@ -269,8 +287,8 @@
         <div class="header-period" id="headerPeriod">—</div>
       </div>
       <button class="sync-btn" onclick="syncData()">
-        <span class="sync-icon" style="display:inline-block">↻</span>
-        <span>Sync</span>
+        <span class="sync-icon" style="display:inline-block;font-size:16px">🔄</span>
+        <span>ซิงค์</span>
       </button>
     </div>
     <div class="stats-row">
@@ -302,9 +320,9 @@
   </div>
 
   <div class="grid" id="empGrid">
-    <div class="state-msg">
-      <div class="icon">⏳</div>
-      <div>กำลังโหลดข้อมูล...</div>
+    <div class="state-msg" id="loadingMsg">
+      <div class="icon" style="animation:spin 1.2s linear infinite;display:inline-block">🌳</div>
+      <div>กำลังโหลด...</div>
     </div>
   </div>
 </div>
@@ -365,7 +383,7 @@ const DEMO_DATA = {
       dayWork: [0,1,0,1,0,1,1,1,0,0,1], otHours: [0,0,0,0,0,1,2,1,0,0,0] },
     { id: 2, name: "ลุงทัย", dayRate: 300, otRate: 50,
       dayWork: [0,1,0,1,0,1,1,1,1,0,1], otHours: [2,0,0,0,0,1,2,1,1,0,0] },
-    { id: 3, name: "ป้าอ่อย", dayRate: 300, otRate: 50,
+    { id: 3, name: "ป้าอ้อย", dayRate: 300, otRate: 50,
       dayWork: [0,1,0,1,1,1,1,1,1,0,1], otHours: [0,0,0,0,1,1,2,1,1,0,0] },
     { id: 4, name: "ป้าแอ้ว", dayRate: 300, otRate: 50,
       dayWork: [0,1,0,1,1,0,0.5,0,1,0,1], otHours: [0,2,1.5,1,1,0,2,0,1,0,0] },
@@ -508,10 +526,11 @@ function renderHeader() {
   const todayTH = (() => {
     const d = new Date();
     const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-    return d.getDate() + ' ' + months[d.getMonth()];
+    const thaiYear = d.getFullYear() + 543;
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + thaiYear;
   })();
   const startPeriod = (appData.period || '').split('-')[0].trim();
-  document.getElementById('headerPeriod').textContent = startPeriod + ' - ' + todayTH;
+  document.getElementById('headerPeriod').textContent = startPeriod + ' — ' + todayTH;
   const emps = appData.employees;
   let totalPay = 0;
   emps.forEach(e => {
@@ -521,6 +540,12 @@ function renderHeader() {
   });
   document.getElementById('statEmp').textContent = emps.length + ' คน';
   document.getElementById('statTotal').textContent = '฿' + totalPay.toLocaleString();
+}
+
+function activateCard(id) {
+  document.querySelectorAll('.emp-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.add('active');
 }
 
 function renderGrid(emps) {
@@ -536,13 +561,13 @@ function renderGrid(emps) {
     const color = getColor(e.id);
     const imgTag = `<img src="imgs/${e.id}.jpg" onerror="this.style.display='none'" alt="">`;
     const pay = days * e.dayRate + ot * e.otRate;
-    return `<div class="emp-card" onclick="openSheet(${e.id})">
+    return `<div class="emp-card" id="card-${e.id}" onclick="activateCard(${e.id}); openSheet(${e.id})">
       <div class="avatar" style="background:${color}">${initials}${imgTag}</div>
       <div class="emp-name">${e.name}</div>
       <div class="emp-badges">
-        <span class="badge badge-day">${days}วัน</span>
-        <span class="badge badge-ot">${ot}ช.ม</span>
-        <span class="badge badge-pay">${pay.toLocaleString()}฿</span>
+        <span class="badge badge-day">📆${days}วัน</span>
+        <span class="badge badge-ot">⏱${ot}ช.ม</span>
+        <span class="badge badge-pay">฿${pay.toLocaleString()}</span>
       </div>
     </div>`;
   }).join('');
@@ -591,7 +616,7 @@ function renderChips() {
   document.getElementById('bsChips').innerHTML = `
     <div class="chip"><div class="chip-icon">☀️</div><div class="chip-val green">${days}</div><div class="chip-label">วัน</div></div>
     <div class="chip"><div class="chip-icon">⏱</div><div class="chip-val orange">${ot.toFixed(1)}</div><div class="chip-label">ชั่วโมง OT</div></div>
-    <div class="chip"><div class="chip-icon">💰</div><div class="chip-val blue">฿${pay.toLocaleString()}</div><div class="chip-label">รับเงิน</div></div>
+    <div class="chip"><div class="chip-icon">💰</div><div class="chip-val green">฿${pay.toLocaleString()}</div><div class="chip-label">รับเงิน</div></div>
   `;
 }
 
