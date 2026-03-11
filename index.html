@@ -562,9 +562,9 @@ function renderGrid(emps) {
     return `<div class="emp-card" id="card-${e.id}" onclick="activateCard(${e.id}); openSheet(${e.id})">
       <div class="avatar" style="background:${color}">${initials}${imgTag}</div>
       <div style="flex:1;min-width:0">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
-          <div class="emp-name">${e.name}</div>
-          <span class="badge badge-pay" style="flex-shrink:0">฿ ${pay.toLocaleString()}</span>
+        <div class="emp-badges" style="margin-bottom:7px">
+          <div class="emp-name" style="margin-right:6px">${e.name}</div>
+          <span class="badge badge-pay">฿ ${pay.toLocaleString()}</span>
         </div>
         <div class="emp-badges">
           <span class="badge badge-day">📆 ${days} วัน</span>
