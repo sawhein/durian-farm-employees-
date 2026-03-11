@@ -131,7 +131,7 @@
   }
   .bs-avatar { overflow: hidden; position: relative; }
   .emp-name {
-    font-size: 17px; font-weight: 700; text-align: left; line-height: 1.3;
+    font-size: 20px; font-weight: 700; text-align: left; line-height: 1.3;
     color: var(--text); word-break: break-word; font-family: 'Sarabun', sans-serif;
   }
   .emp-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-start; margin-top: 4px; }
@@ -562,11 +562,13 @@ function renderGrid(emps) {
     return `<div class="emp-card" id="card-${e.id}" onclick="activateCard(${e.id}); openSheet(${e.id})">
       <div class="avatar" style="background:${color}">${initials}${imgTag}</div>
       <div style="flex:1;min-width:0">
-        <div class="emp-name">${e.name}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+          <div class="emp-name">${e.name}</div>
+          <span class="badge badge-pay" style="flex-shrink:0">฿ ${pay.toLocaleString()}</span>
+        </div>
         <div class="emp-badges">
           <span class="badge badge-day">📆 ${days} วัน</span>
           <span class="badge badge-ot">⏱ ${ot} ช.ม</span>
-          <span class="badge badge-pay">฿ ${pay.toLocaleString()}</span>
         </div>
       </div>
     </div>`;
