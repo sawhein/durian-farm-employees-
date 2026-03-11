@@ -504,7 +504,14 @@ function parseSheetData(raw) {
 
 // ===== Rendering =====
 function renderHeader() {
-  document.getElementById('headerPeriod').textContent = appData.period || '—';
+  // Show period as "start - today"
+  const todayTH = (() => {
+    const d = new Date();
+    const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    return d.getDate() + ' ' + months[d.getMonth()];
+  })();
+  const startPeriod = (appData.period || '').split('-')[0].trim();
+  document.getElementById('headerPeriod').textContent = startPeriod + ' - ' + todayTH;
   const emps = appData.employees;
   let totalPay = 0;
   emps.forEach(e => {
