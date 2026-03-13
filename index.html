@@ -68,7 +68,7 @@
   }
   .stat-label { font-size: 14px; color: var(--text3); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
   .stat-value { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 26px; margin-top: 2px; }
-  .stat-value.green { color: var(--accent2); }
+  .stat-value.green { color: #FF3B30; }
   .stat-value.orange { color: var(--accent); }
   .stat-value.blue { color: var(--accent3); }
 
@@ -131,20 +131,26 @@
   }
   .bs-avatar { overflow: hidden; position: relative; }
   .emp-name {
-    font-size: 20px; font-weight: 700; text-align: left; line-height: 1.3;
+    font-size: 22px; font-weight: 700; text-align: left; line-height: 1.3;
     color: var(--text); word-break: break-word; font-family: 'Sarabun', sans-serif;
   }
   .emp-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-start; margin-top: 4px; }
   .badge {
-    font-size: 16px; padding: 5px 12px; border-radius: 8px;
+    font-size: 19px; padding: 5px 12px; border-radius: 8px;
     font-weight: 700; font-family: 'Sarabun', sans-serif;
     display: flex; align-items: center; gap: 2px;
   }
-  .badge-day { background: rgba(191,90,242,0.2); color: #BF5AF2; }
+  .badge-day { background: rgba(48,209,88,0.2);  color: #30D158; }
   .badge-ot  { background: rgba(10,132,255,0.2);  color: #0A84FF; }
-  .badge-pay { background: rgba(48,209,88,0.2);   color: #30D158; }
+  .badge-pay { background: rgba(255,59,48,0.2);   color: #FF3B30; }
 
   /* Loading/Error state */
+  .loading-spinner {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.1);
+    border-top-color: #0A84FF;
+    animation: spin 0.9s linear infinite;
+  }
   .state-msg {
     grid-column: 1/-1; text-align: center; padding: 60px 20px;
     color: var(--text3); font-size: 15px; display: flex; flex-direction: column;
@@ -194,7 +200,7 @@
   .chip-icon { font-size: 18px; margin-bottom: 2px; }
   .chip-val { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 24px; }
   .chip-label { font-size: 15px; color: var(--text3); margin-top: 2px; }
-  .chip-val.green { color: var(--accent2); }
+  .chip-val.green { color: #FF3B30; }
   .chip-val.orange { color: var(--accent); }
   .chip-val.blue { color: var(--accent3); }
 
@@ -246,10 +252,10 @@
   .pay-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
   .pay-row + .pay-row { border-top: 1px solid rgba(255,255,255,0.05); }
   .pay-label { font-size: 18px; color: var(--text2); }
-  .pay-val { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 21px; color: #30D158; }
+  .pay-val { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 21px; color: #FF3B30; }
   .pay-total { background: linear-gradient(135deg, rgba(48,209,88,0.15), rgba(10,132,255,0.1)); border-radius: 12px; padding: 14px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(48,209,88,0.2); }
   .pay-total .pay-label { font-weight: 700; font-size: 20px; color: var(--text); }
-  .pay-total .pay-val { font-size: 28px; color: var(--accent2); }
+  .pay-total .pay-val { font-size: 28px; color: #FF3B30; }
 
   /* URL Config */
   .url-banner {
@@ -319,7 +325,7 @@
 
   <div class="grid" id="empGrid">
     <div class="state-msg" id="loadingMsg">
-      <div class="icon" style="animation:spin 1.2s linear infinite;display:inline-block">🌳</div>
+      <div class="loading-spinner"></div>
       <div>กำลังโหลด...</div>
     </div>
   </div>
@@ -540,26 +546,6 @@ function renderHeader() {
   document.getElementById('statTotal').textContent = '฿' + totalPay.toLocaleString();
 }
 
-function playPop() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(600, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.08);
-  } catch(e) {}
-  try {
-    if (navigator.vibrate) navigator.vibrate(10);
-  } catch(e) {}
-}
-
 function activateCard(id) {
   document.querySelectorAll('.emp-card').forEach(c => c.classList.remove('active'));
   const card = document.getElementById('card-' + id);
@@ -579,7 +565,7 @@ function renderGrid(emps) {
     const color = getColor(e.id);
     const imgTag = `<img src="imgs/${e.id}.jpg" onerror="this.style.display='none'" alt="">`;
     const pay = days * e.dayRate + ot * e.otRate;
-    return `<div class="emp-card" id="card-${e.id}" onclick="playPop(); activateCard(${e.id}); openSheet(${e.id})">
+    return `<div class="emp-card" id="card-${e.id}" onclick="activateCard(${e.id}); openSheet(${e.id})">
       <div class="avatar" style="background:${color}">${initials}${imgTag}</div>
       <div style="flex:1;min-width:0">
         <div class="emp-badges" style="margin-bottom:7px">
@@ -587,7 +573,7 @@ function renderGrid(emps) {
           <span class="badge badge-pay">฿ ${pay.toLocaleString()}</span>
         </div>
         <div class="emp-badges">
-          <span class="badge badge-day">📆 ${days} วัน</span>
+          <span class="badge badge-day">📅 ${days} วัน</span>
           <span class="badge badge-ot">⏱ ${ot} ช.ม</span>
         </div>
       </div>
@@ -611,7 +597,13 @@ function openSheet(id) {
   bsAv.style.background = color;
   bsAv.innerHTML = getInitials(currentEmp.name) + `<img src="imgs/${currentEmp.id}.jpg" onerror="this.style.display='none'" alt="">`;
   document.getElementById('bsName').textContent = currentEmp.name;
-  document.getElementById('bsPeriod').textContent = appData.period;
+  const bsTodayTH = (() => {
+    const d = new Date();
+    const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + (d.getFullYear()+543);
+  })();
+  const bsStart = (appData.period || '').split('-')[0].trim();
+  document.getElementById('bsPeriod').textContent = bsStart + ' — ' + bsTodayTH;
   
   renderChips();
   initCalendar();
