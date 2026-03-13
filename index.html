@@ -540,6 +540,26 @@ function renderHeader() {
   document.getElementById('statTotal').textContent = '฿' + totalPay.toLocaleString();
 }
 
+function playPop() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.08);
+  } catch(e) {}
+  try {
+    if (navigator.vibrate) navigator.vibrate(10);
+  } catch(e) {}
+}
+
 function activateCard(id) {
   document.querySelectorAll('.emp-card').forEach(c => c.classList.remove('active'));
   const card = document.getElementById('card-' + id);
@@ -559,7 +579,7 @@ function renderGrid(emps) {
     const color = getColor(e.id);
     const imgTag = `<img src="imgs/${e.id}.jpg" onerror="this.style.display='none'" alt="">`;
     const pay = days * e.dayRate + ot * e.otRate;
-    return `<div class="emp-card" id="card-${e.id}" onclick="activateCard(${e.id}); openSheet(${e.id})">
+    return `<div class="emp-card" id="card-${e.id}" onclick="playPop(); activateCard(${e.id}); openSheet(${e.id})">
       <div class="avatar" style="background:${color}">${initials}${imgTag}</div>
       <div style="flex:1;min-width:0">
         <div class="emp-badges" style="margin-bottom:7px">
