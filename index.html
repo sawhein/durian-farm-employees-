@@ -611,6 +611,7 @@ function filterCards() {
 
 // ===== Bottom Sheet =====
 function openSheet(id) {
+  if (!appData || !appData.employees) return;
   currentEmp = appData.employees.find(e => e.id === id);
   if (!currentEmp) return;
   
@@ -630,7 +631,6 @@ function openSheet(id) {
   renderChips();
   initCalendar();
   renderLog();
-  renderPay();
   
   document.getElementById('bsOverlay').classList.add('open');
   document.getElementById('bottomSheet').classList.add('open');
