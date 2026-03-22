@@ -746,8 +746,11 @@ function renderCalendar() {
     else if (entry && entry.work > 0 && entry.work < 1) cls += ' half';
     if (entry && entry.ot > 0) cls += ' has-ot';
     if (isToday) cls += ' today-mark';
-    const otDot = (entry && entry.ot > 0) ? `<span style="width:5px;height:5px;border-radius:50%;background:#3182CE;display:block;margin:1px auto 0"></span>` : '<span style="width:5px;height:5px;display:block;margin:1px auto 0"></span>';
-    html += `<div class="${cls}" style="flex-direction:column;gap:0;align-items:center">${d}${otDot}</div>`;
+    const otCount = (entry && entry.ot > 0) ? Math.min(Math.round(entry.ot), 4) : 0;
+    const dotsHtml = otCount > 0
+      ? `<span style="display:flex;gap:2px;justify-content:center;margin-top:2px">${'<span style="width:4px;height:4px;border-radius:50%;background:#3182CE;display:inline-block"></span>'.repeat(otCount)}</span>`
+      : `<span style="height:8px;display:block"></span>`;
+    html += `<div class="${cls}" style="flex-direction:column;gap:0;align-items:center;padding-bottom:2px">${d}${dotsHtml}</div>`;
   }
   grid.innerHTML = html;
   
