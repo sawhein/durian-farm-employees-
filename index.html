@@ -526,7 +526,6 @@ function parseSheetData(raw) {
 
 // ===== Rendering =====
 function renderHeader() {
-  // Show period as "start - today"
   const todayTH = (() => {
     const d = new Date();
     const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
@@ -535,15 +534,6 @@ function renderHeader() {
   })();
   const startPeriod = (appData.period || '').split('-')[0].trim();
   document.getElementById('headerPeriod').textContent = startPeriod + ' — ' + todayTH;
-  const emps = appData.employees;
-  let totalPay = 0;
-  emps.forEach(e => {
-    const days = e.dayWork.reduce((s, v) => s + (v || 0), 0);
-    const ot = e.otHours.reduce((s, v) => s + (v || 0), 0);
-    totalPay += days * e.dayRate + ot * e.otRate;
-  });
-  document.getElementById('statEmp').textContent = emps.length + ' คน';
-  document.getElementById('statTotal').textContent = '฿' + totalPay.toLocaleString();
 }
 
 function activateCard(id) {
@@ -583,9 +573,7 @@ function renderGrid(emps) {
 }
 
 function filterCards() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const filtered = q ? allEmployees.filter(e => e.name.toLowerCase().includes(q)) : allEmployees;
-  renderGrid(filtered);
+  renderGrid(allEmployees);
 }
 
 // ===== Bottom Sheet =====
